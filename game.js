@@ -1,5 +1,6 @@
 var sprites = {
- ship: { sx: 0, sy: 0, w: 37, h: 42, frames: 1 },
+ background: { sx: 421, sy: 0 , w: 549, h: 624, frames: 1 },
+ frog: { sx: 0, sy: 338, w: 36, h: 55, frames: 1 }, 
  missile: { sx: 0, sy: 30, w: 2, h: 10, frames: 1 },
  enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 },
  enemy_bee: { sx: 79, sy: 0, w: 37, h: 43, frames: 1 },
@@ -60,10 +61,12 @@ var level1 = [
 
 var playGame = function() {
   var board = new GameBoard();
-  board.add(new PlayerShip());
+  board.add(new Background());
+
+  /*board.add(new PlayerShip());
   board.add(new Level(level1,winGame));
   Game.setBoard(3,board);
-  Game.setBoard(5,new GamePoints(0));
+  Game.setBoard(5,new GamePoints(0));*/
 };
 
 var winGame = function() {
@@ -77,6 +80,10 @@ var loseGame = function() {
                                   "Press fire to play again",
                                   playGame));
 };
+
+var Background = function(){
+	this.setup('background',)
+}
 
 var Starfield = function(speed,opacity,numStars,clear) {
 
@@ -140,7 +147,7 @@ var Starfield = function(speed,opacity,numStars,clear) {
 };
 
 var PlayerShip = function() { 
-  this.setup('ship', { vx: 0, reloadTime: 0.25, maxVel: 200 });
+  this.setup('frog', { vx: 0, reloadTime: 0.25, maxVel: 200 });
 
   this.reload = this.reloadTime;
   this.x = Game.width/2 - this.w / 2;
@@ -297,7 +304,7 @@ Explosion.prototype.step = function(dt) {
 };
 
 window.addEventListener("load", function() {
-  Game.initialize("game",sprites,startGame);
+  Game.initialize("game",sprites,playGame);
 });
 
 
