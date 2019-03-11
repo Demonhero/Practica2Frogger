@@ -54,7 +54,7 @@ var Game = new function() {
   
 
   // Handle Input
-  var KEY_CODES = { 37:'left', 39:'right', 32 :'fire' };
+  var KEY_CODES = { 37:'left', 39:'right', 32 :'fire', 38:'up', 40:'down' };
   this.keys = {};
 
   this.setupInput = function() {
@@ -170,7 +170,14 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
   };
 
   this.draw = function(ctx) {
-    ctx.fillStyle = "#FFFFFF";
+
+  	//Background
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, Game.width, Game.height);
+
+    //Foreground
+
+    ctx.fillStyle = "#00FF00";
 
     ctx.font = "bold 40px bangers";
     var measure = ctx.measureText(title);  
@@ -195,6 +202,9 @@ var GameBoard = function() {
     obj.board=this; 
     this.objects.push(obj); 
     this.cnt[obj.type] = (this.cnt[obj.type] || 0) + 1;
+    this.objects.sort(function(a,b){
+    	return a.zIndex - b.zIndex;
+    })
     return obj; 
   };
 
@@ -299,60 +309,6 @@ Sprite.prototype.draw = function(ctx) {
 Sprite.prototype.hit = function(damage) {
   this.board.remove(this);
 };
-
-
-var Level = function(levelData,callback) {
-  this.levelData = [];
-  for(var i =0; i<levelData.length; i++) {
-    this.levelData.push(Object.create(levelData[i]));
-  }
-  this.t = 0;
-  this.callback = callback;
-};
-
-Level.prototype.step = function(dt) {
-  var idx = 0, remove = [], curShip = null;
-
-  // Update the current time offset
-  this.t += dt * 1000;
-
-  //   Start, End,  Gap, Type,   Override
-  // [ 0,     4000, 500, 'step', { x: 100 } ]
-  while((curShip = this.levelData[idx]) && 
-        (curShip[0] < this.t + 2000)) {
-    // Check if we've passed the end time 
-    if(this.t > curShip[1]) {
-      remove.push(curShip);
-    } else if(curShip[0] < this.t) {
-      // Get the enemy definition blueprint
-      var enemy = enemies[curShip[3]],
-          override = curShip[4];
-
-      // Add a new enemy with the blueprint and override
-      this.board.add(new Enemy(enemy,override));
-
-      // Increment the start time by the gap
-      curShip[0] += curShip[2];
-    }
-    idx++;
-  }
-
-  // Remove any objects from the levelData that have passed
-  for(var i=0,len=remove.length;i<len;i++) {
-    var remIdx = this.levelData.indexOf(remove[i]);
-    if(remIdx != -1) this.levelData.splice(remIdx,1);
-  }
-
-  // If there are no more enemies on the board or in 
-  // levelData, this level is done
-  if(this.levelData.length === 0 && this.board.cnt[OBJECT_ENEMY] === 0) {
-    if(this.callback) this.callback();
-  }
-
-};
-
-Level.prototype.draw = function(ctx) { };
-
 
 var TouchControls = function() {
 
