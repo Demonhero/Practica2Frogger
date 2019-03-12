@@ -8,7 +8,7 @@ var sprites = {
  coche5: { sx: 383, sy: 0, w: 48, h: 48, frames: 1 },
  tronco: { sx: 288, sy: 383, w: 142, h: 48, frames: 1 },
  death: { sx:0, sy: 143, w:48, h:48, frames:4},
- tortuga: { sx: 149, sy: 57, w: 32, h: 24, frame: 2, }
+ tortuga: { sx: 0, sy: 288, w: 54, h: 47, frames: 1, }
 };
 
 var enemies = {
@@ -42,6 +42,7 @@ var playGame = function() {
 
   var tableroJuego = new GameBoard();
   tableroJuego.add(new Frog());
+  tableroJuego.add(new Tortuga());
   Game.setBoard(1,tableroJuego);
 };
 
@@ -81,6 +82,10 @@ var Frog= function(){
 
 Frog.prototype = new Sprite();
 Frog.prototype.type = RANA;
+
+Frog.prototype.onLog = function(vLog) {
+    this.vx = vLog;
+};
 
 Frog.prototype.hit = function() {
     Game.lives--;
@@ -135,15 +140,15 @@ var Tortuga= function(){
         f: 0,
         zIndex: 5
     });
-    this.ySpeed = -55;
-    this.x = Game.width / 2 + 48 * 2;
-    this.y = Game.height;
-	this.zIndex = 6;
+    this.xSpeed = 54;
+    this.x = 0;
+    this.y = Game.height/12;
+	this.zIndex = 5;
 };
 
 Tortuga.prototype = new Sprite();
 Tortuga.prototype.step = function(dt) {
-    if (this.y + this.h < 0) {
+    if (this.x+this.width <0 || this.x > Game.width) {
         this.board.remove(this);
     }
     this.f += dt;
@@ -153,13 +158,57 @@ Tortuga.prototype.step = function(dt) {
     }
     if (this.frame > sprites.tortuga.frames)
         this.frame = 0;
-    this.y += this.ySpeed * dt;
-    var col = this.board.collide(this, FROG);
+    this.x += this.xSpeed * dt;
+    var col = this.board.collide(this, RANA);
     if (col) {
         col.hit();
     }
 
 };
+
+var Tronco= function(row, speed){
+	var seed= Math.random();
+	this.setup('tronco',{ zIndex:1});
+	this.xVel=speed;
+	this.x=(speed>0)?0:Game.width;
+	this.y= 48+row*48;
+};
+
+Tronco.prototype = new Sprite();
+Tronco.prototype.type= MADERA;
+Tronco.prototype.step= function(dt){
+	this.x+= this.xVel*dt;
+	if(this.x+this.width <0 || this.x > Game.width)
+		this.board.remove(this);
+	var rana = this.board.collide(this, RANA);
+	if(rana){
+		rana.onLog(this.xVel);
+	}
+}
+
+var Coche= function(sprite, speed) {
+	this.setup(sprite, {zIndex:5});
+	this.xVel= speed;
+	this.x = (speed >0)? 0: Game.width;
+	this.y = Game.height- 48 -(parseInt(sprite[3])*48);
+	
+};
+
+Coche.prototype= new Sprite();
+Coche.prototype.type = COCHE;
+
+Car.prototype.step = function(dt){
+	this.x += this.xVel*dt;
+	if (this.x + this.width < 0 || this.x > Game.width)
+		this.board.remove(this);
+	var choque = this.board.collide(this, RANA);
+	if (choque) {
+        choque.hit();
+        this.board.remove(this);
+	}
+};
+
+
 
 
 
