@@ -54,9 +54,9 @@ var startGame = function() {
 };
 
 var playGame = function() {
-  var board = new GameBoard();
-  board.add(new Background());
-  Game.setBoard(0,board);
+  var fondo = new GameBoard();
+  fondo.add(new Background());
+  Game.setBoard(0,fondo);
 
   var tableroJuego = new GameBoard();
   tableroJuego.add(new Level(level));
