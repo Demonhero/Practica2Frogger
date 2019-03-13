@@ -277,17 +277,21 @@ Water.prototype.draw = function() {};
 Water.prototype.step = function(dt) {};
 
 var Death = function(rana){
-	this.setup('muerte', {frame:0, f:0, zIndex:6});
-	this.rana = rana;
-	this.x = rana.x;
-	this.y = rana.y;
-	this.fin = false;
+	this.setup('muerte', {
+        frame: 0,
+        f: 0,
+        zIndex: 5
+    });
+    this.rana = rana;
+    this.x = rana.x;
+    this.y = rana.y;
+	this.end = false;
 
 }
 
 Death.prototype = new Sprite();
 Death.prototype.step = function(dt) {
-    this.f += dt;
+	this.f += dt;
     if (this.f >= 1 / 4) {
         this.f -= 1 / 4;
         this.frame++;
@@ -295,15 +299,16 @@ Death.prototype.step = function(dt) {
 
     if (this.frame > sprites['muerte'].frames) {
         this.board.remove(this);
-        if (!this.fin)
+        if (!this.end)
             if (Game.lives <= 0) {
                 loseGame();
             } else {
                 this.board.add(new Frog());
             }
-        this.fin = true;
+        this.end = true;
 
-    }
+	}
+
 };
 
 var Fin = function() {
@@ -318,8 +323,14 @@ var Fin = function() {
 Fin.prototype = new Sprite();
 Fin.prototype.step = function(dt) {
     var col = this.board.collide(this, RANA);
+    this.f += dt;
+    if (this.f >= 1 / 4) {
+        this.f -= 1 / 4;
+        this.frame++;
+    }
+    if (this.frame > sprites.muerte.frames)
+        this.frame = 0;
     if (col && col.type === RANA) {
-        this.t += dt;
         if (this.t >= 0.5) {
             this.board.remove(col);
             winGame();

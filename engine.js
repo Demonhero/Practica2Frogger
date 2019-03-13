@@ -193,7 +193,7 @@ var Life= function Life(callback){
 	var up = false;
 	this.step= function(dt){
 		if(Game.lives==0) up=true;
-		if(up && callback) callback();
+		if(up && callback && Game.lives>0) callback();
 	};
 
 	this.draw =function(ctx){
@@ -206,7 +206,7 @@ var Life= function Life(callback){
 
 
 	};
-}
+};
 
 
 var GameBoard = function() {
@@ -256,8 +256,8 @@ var GameBoard = function() {
   this.iterate = function(funcName) {
      var args = Array.prototype.slice.call(arguments,1);
      for(var i=0,len=this.objects.length;i<len;i++) {
-       var obj = this.objects[i];
-       obj[funcName].apply(obj,args);
+       	var obj = this.objects[i];
+       	obj[funcName].apply(obj,args);
      }
   };
 
