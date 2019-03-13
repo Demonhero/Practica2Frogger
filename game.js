@@ -18,7 +18,7 @@ var enemies = {
   coche4: { sprite: 'coche4', speed: 300},
   coche5: { sprite: 'coche5', speed: -100},
   log1: {sprite: 'log',row: 0,speed: -200},
-  log2: {sprite: 'log',row: 2,speed: 155},
+  log2: {sprite: 'log',row: 2,speed: -155},
   log3: {sprite: 'log',row: 4,speed: -120},
   toruga1: {sprite: 'tortuga', row:1, speed: 50},
   toruga2: {sprite: 'tortuga', row:3, speed: 50},
@@ -64,6 +64,8 @@ var playGame = function() {
   tableroJuego.add(new Water());
   tableroJuego.add(new Frog());
   Game.setBoard(1,tableroJuego);
+  
+  Game.setBoard(2, new Life(playGame));
 };
 
 var winGame = function() {

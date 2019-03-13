@@ -189,6 +189,25 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
   };
 };
 
+var Life= function Life(callback){
+	var up = false;
+	this.step= function(dt){
+		if(Game.lives==0) up=true;
+		if(up && callback) callback();
+	};
+
+	this.draw =function(ctx){
+		var text= "Vidas: "+ Game.lives;
+
+		ctx.fillStyle = "#FFFF00";
+		ctx.font= "30px bangers"
+		var measure = ctx.measureText(text);
+		ctx.fillText(text, 0,30);
+
+
+	};
+}
+
 
 var GameBoard = function() {
   var board = this;
