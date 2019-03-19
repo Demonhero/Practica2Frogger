@@ -317,25 +317,14 @@ var Fin = function() {
     this.w = Game.width;
     this.h = 48;
     this.zIndex = 0;
-    this.t = 0;
 
 };
 Fin.prototype = new Sprite();
 Fin.prototype.step = function(dt) {
     var col = this.board.collide(this, RANA);
-    this.f += dt;
-    if (this.f >= 1 / 4) {
-        this.f -= 1 / 4;
-        this.frame++;
-    }
-    if (this.frame > sprites.muerte.frames)
-        this.frame = 0;
     if (col && col.type === RANA) {
-        if (this.t >= 0.5) {
-            this.board.remove(col);
-            winGame();
-        }
-
+        this.board.remove(col);
+        winGame();
     }
 
 };
